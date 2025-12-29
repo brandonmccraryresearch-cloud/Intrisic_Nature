@@ -19,8 +19,8 @@ class TestQNCD:
     def test_orthogonal_states(self):
         # (1,0,0,0) and (0,1,0,0) are orthogonal in R4
         # Their dot product is 0.
-        # Fidelity is the squared magnitude: dot_product^2 = 0^2 = 0.
-        # Distance should be 1 - fidelity = 1 - 0 = 1.0.
+        # Fidelity (squared magnitude of inner product): |dot_product|^2 = 0^2 = 0.
+        # Distance: d_QNCD = 1 - fidelity = 1 - 0 = 1.0.
         q1 = Quaternion(1, 0, 0, 0)
         q2 = Quaternion(0, 1, 0, 0)
         d = compute_qncd(q1, q2)
