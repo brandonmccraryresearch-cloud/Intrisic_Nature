@@ -1,7 +1,5 @@
 import numpy as np
-from typing import List
 from irh.verification import theoretical_reference, get_transparency_engine
-from irh.core.v22.cymatics import GInfElement
 
 class HarmonyFunctional:
     """

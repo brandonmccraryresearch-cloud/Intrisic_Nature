@@ -28,7 +28,9 @@ class ResonantNode:
     id : int
         Unique identifier.
     state : GInfElement
-        Current state in G_inf.
+        Current state in G_inf. Defaults to the identity element on G_inf:
+        SU(2) identity (unit quaternion 1+0i+0j+0k) with U(1) phase 0.
+        This represents the "vacuum" or "identity" state of the manifold.
     frequency : float
         Natural frequency (ω).
     """
@@ -42,7 +44,19 @@ class ResonantNode:
         description="Information is a physical state of oscillation on G_inf."
     )
     def update_phase(self, dt: float) -> None:
-        """Evolve phase based on natural frequency: φ(t+dt) = φ(t) + ω*dt."""
+        """
+        Evolve the U(1) phase based on the natural frequency: φ(t+dt) = φ(t) + ω·dt.
+
+        This method performs a pure U(1)_φ evolution on G_inf = SU(2) × U(1)_φ:
+        the SU(2) quaternion component ``state.su2`` is intentionally held fixed.
+        Any non-trivial SU(2) dynamics (e.g. rotations on the internal spinor)
+        are handled by separate update operators; ``update_phase`` only updates
+        the holonomic phase degree of freedom.
+        
+        In the current implementation, SU(2) evolution would be driven by the
+        action functional and ARO (Adaptive Resonance Optimization), which are
+        not yet implemented in this Priority 1 scaffold.
+        """
         self.state.phase = (self.state.phase + self.frequency * dt) % (2 * np.pi)
 
 
@@ -67,7 +81,23 @@ class CymaticResonanceNetwork:
     )
     def get_collective_wavefunction(self) -> List[GInfElement]:
         """Return the collective state vector Ψ."""
-        return [node.state for node in self.nodes]
+        wavefunction = [node.state for node in self.nodes]
+        
+        # Compute properties for logging
+        norms = [node.state.su2.norm() for node in self.nodes]
+        avg_norm = np.mean(norms)
+        
+        self.transparency.log_theoretical_step(
+            action="Extract Collective Wavefunction",
+            manuscript_ref="IRH v22.2",
+            equation_ref="Axiom 1.1",
+            details={
+                "num_nodes": len(self.nodes),
+                "average_norm": float(avg_norm)
+            }
+        )
+        
+        return wavefunction
 
     @theoretical_reference(
         manuscript="IRH v22.2",

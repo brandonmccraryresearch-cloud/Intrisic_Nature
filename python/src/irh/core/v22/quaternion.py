@@ -1,6 +1,5 @@
 import numpy as np
 from dataclasses import dataclass
-from typing import Union, Tuple
 from irh.verification import theoretical_reference
 
 @dataclass

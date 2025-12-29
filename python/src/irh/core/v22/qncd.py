@@ -1,5 +1,4 @@
 import numpy as np
-from typing import Union
 from irh.core.v22.quaternion import Quaternion
 from irh.verification import theoretical_reference
 
