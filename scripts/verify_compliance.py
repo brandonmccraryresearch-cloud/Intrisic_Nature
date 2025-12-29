@@ -8,7 +8,6 @@ and other compliance requirements defined in copilot-instructions.md.
 
 import argparse
 import json
-import os
 import re
 import sys
 from pathlib import Path
