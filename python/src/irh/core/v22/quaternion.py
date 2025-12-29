@@ -58,7 +58,7 @@ class Quaternion:
     def normalize(self) -> 'Quaternion':
         n = self.norm()
         if n == 0:
-            return self # Or raise error
+            raise ZeroDivisionError("Cannot normalize zero quaternion")
         return Quaternion(self.w/n, self.x/n, self.y/n, self.z/n)
 
     def to_numpy(self) -> np.ndarray:
