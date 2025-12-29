@@ -1,17 +1,26 @@
 import unittest
 import numpy as np
-from irh.core.v22.cymatics import CymaticResonanceNetwork, ResonantNode
+from irh.core.v22.cymatics import CymaticResonanceNetwork, ResonantNode, GInfElement
+from irh.core.v22.quaternion import Quaternion
 
 class TestCymatics(unittest.TestCase):
     
     def test_resonant_node_phase_update(self):
-        node = ResonantNode(id=0, frequency=1.0, phase=0.0)
+        # Initialize with default GInfElement (phase=0.0)
+        node = ResonantNode(id=0, frequency=1.0)
+        # Ensure start phase is 0
+        node.state.phase = 0.0
+
         dt = 0.1
         node.update_phase(dt)
         
         expected_phase = 0.1
-        self.assertAlmostEqual(node.phase, expected_phase)
-        self.assertAlmostEqual(node.state, np.exp(1j * expected_phase))
+        self.assertAlmostEqual(node.state.phase, expected_phase)
+
+        # Check complex projection if needed
+        ampl = node.state.to_complex_amplitude()
+        # Norm is 1.0 from default quaternion (1,0,0,0)
+        self.assertAlmostEqual(ampl, np.exp(1j * expected_phase))
         
     def test_network_initialization(self):
         net = CymaticResonanceNetwork(num_nodes=50)
@@ -23,7 +32,9 @@ class TestCymatics(unittest.TestCase):
         psi = net.get_collective_wavefunction()
         
         self.assertEqual(len(psi), 10)
-        self.assertTrue(np.iscomplexobj(psi))
+        # Verify it is a list of GInfElements
+        self.assertIsInstance(psi[0], GInfElement)
+        self.assertIsInstance(psi[0].su2, Quaternion)
         
     def test_spectral_stability_check(self):
         net = CymaticResonanceNetwork(num_nodes=10)
