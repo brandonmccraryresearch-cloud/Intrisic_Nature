@@ -76,7 +76,7 @@ class SymplecticAction:
         equation="Sec. 2.2, Eq. 3",
         description="Interaction Term with Symplectic Kernel K(g1, g2, g3, g4)"
     )
-    def compute_interaction_term(self, field: List[GInfElement], adjacency_matrix: np.ndarray) -> float:
+    def compute_interaction_term(self, field: List[GInfElement]) -> float:
         """
         S_int = λ ∫ ... φ⁴ ...
 
@@ -180,12 +180,10 @@ class SymplecticAction:
         """
         Compute the total action S = S_kin + S_int.
         
-        Note: The adjacency matrix for interaction term computation is currently not implemented.
-        The interaction term uses a local phi^4 approximation.
+        Note: The interaction term currently uses a local phi^4 approximation.
+        Full non-local interactions using adjacency structure are not yet implemented.
         """
-        # Placeholder adjacency for future implementation
-        adj = np.zeros_like(laplacian)
-        return self.compute_kinetic_term(field, laplacian) + self.compute_interaction_term(field, adj)
+        return self.compute_kinetic_term(field, laplacian) + self.compute_interaction_term(field)
 
 
 class DissonanceFunctional:
