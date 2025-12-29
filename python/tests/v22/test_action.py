@@ -1,4 +1,3 @@
-import pytest
 import numpy as np
 from irh.core.v22.action import SymplecticAction
 from irh.core.v22.cymatics import GInfElement
@@ -57,3 +56,25 @@ class TestSymplecticAction:
         # exp(i(0 + 0 + 0 - pi)) = exp(-i pi) = -1
         kernel3 = action.evaluate_kernel(g, g, g, g_pi)
         assert np.isclose(kernel3, -1.0 + 0j)
+    
+    def test_kernel_with_distance_weighting(self):
+        """Test that the kernel properly includes QNCD distance weighting."""
+        action = SymplecticAction(gamma_coupling=1.0)
+        
+        # Create states with different quaternions to get non-zero QNCD
+        g1 = GInfElement(Quaternion(1, 0, 0, 0), 0.0)
+        g2 = GInfElement(Quaternion(0, 1, 0, 0), 0.0)  # Orthogonal to g1
+        
+        # Kernel with identical states (QNCD = 0)
+        kernel_same = action.evaluate_kernel(g1, g1, g1, g1)
+        # Phase sum: 0+0+0-0 = 0, exp(i*0) = 1
+        # QNCD sum: all pairs are (g1,g1), distance = 0
+        # Weight: exp(-1.0 * 0) = 1
+        assert np.isclose(kernel_same, 1.0 + 0j)
+        
+        # Kernel with different states (QNCD > 0)
+        kernel_diff = action.evaluate_kernel(g1, g2, g1, g2)
+        # QNCD: d(g1,g2) appears in pairs (1,2), (1,4), (2,3), (3,4)
+        # g1 and g2 are orthogonal, so d(g1,g2) = 1.0
+        # Weight should be less than 1 due to exp(-gamma * QNCD_sum)
+        assert abs(kernel_diff) < 1.0

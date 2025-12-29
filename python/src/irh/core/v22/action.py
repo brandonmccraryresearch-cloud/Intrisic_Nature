@@ -1,8 +1,7 @@
 import numpy as np
-from typing import List, Callable
+from typing import List
 from irh.verification import theoretical_reference, get_transparency_engine
 from irh.core.v22.cymatics import GInfElement
-from irh.core.v22.quaternion import Quaternion
 from irh.core.v22.qncd import compute_qncd
 
 class SymplecticAction:
@@ -178,7 +177,13 @@ class SymplecticAction:
         return phase_factor * weight_factor
 
     def compute_total_action(self, field: List[GInfElement], laplacian: np.ndarray) -> float:
-        # Placeholder adjacency
+        """
+        Compute the total action S = S_kin + S_int.
+        
+        Note: The adjacency matrix for interaction term computation is currently not implemented.
+        The interaction term uses a local phi^4 approximation.
+        """
+        # Placeholder adjacency for future implementation
         adj = np.zeros_like(laplacian)
         return self.compute_kinetic_term(field, laplacian) + self.compute_interaction_term(field, adj)
 

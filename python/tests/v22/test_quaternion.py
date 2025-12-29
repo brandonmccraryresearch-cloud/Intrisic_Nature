@@ -27,7 +27,7 @@ class TestQuaternion:
 
         # i*j = k
         ij = i * j
-        assert ij.w == 0 and ij.x == 0 and ij.y == 0 and ij.z == 1
+        assert ij.w == k.w and ij.x == k.x and ij.y == k.y and ij.z == k.z
 
         # j*i = -k
         ji = j * i

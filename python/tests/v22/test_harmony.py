@@ -1,4 +1,3 @@
-import pytest
 import numpy as np
 from irh.core.v22.harmony import HarmonyFunctional
 
